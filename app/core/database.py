@@ -2,12 +2,15 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, relationship
 from sqlalchemy import text
-from config import settings
+from app.core.config import settings
 import asyncio
 from typing import AsyncGenerator
 
 
 DATABASE_URL = settings.DATABASE_URL
+
+class Base(DeclarativeBase):
+    pass
 
 
 async def test_connection():
@@ -25,7 +28,7 @@ async def test_connection():
         print("Database tidak terhubung, Cek laragon!!!")
         print(f'Error : {err}')
         
-class Destination(DeclarativeBase):
+class Destination(Base):
     __tablename__ = "destinations"
 
     id = Column(Integer, primary_key=True, index=True)

@@ -1,8 +1,9 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException,Form, Depends
 from .schemas import wisata
 from sqlalchemy.ext.asyncio import AsyncSession
 from contextlib import asynccontextmanager
-from app.core.database import get_a
+from app.core.database import get_async_session, Destination
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 app = FastAPI()
@@ -33,7 +34,21 @@ def get_wisata_by_id(wisata_id: int):
     return {"wisata": wisata}
 
 @app.post("/wisata")
-async def create_wisata(wisata: wisata.wisataCreate, session: AsyncSession = Depends(get_a)):
-    post = Post()
+async def create_wisata(wisata: wisata.wisataCreate, session: AsyncSession = Depends(get_async_session)):
+    destination = Destination(
+        title=wisata.title,
+        address=wisata.address,
+        description=wisata.description,
+        latitude=wisata.latitude,
+        longitude=wisata.longitude,
+        phone=wisata.phone,
+        website=wisata.website,
+        operating_hours=wisata.operating_hours,
+        ticket_price=wisata.ticket_price
+    )
+    session.add(destination)
+    await session.commit()
+    await session.refresh(destination)
+    return {"message": "Wisata created successfully", "wisata": destination}
 
     
