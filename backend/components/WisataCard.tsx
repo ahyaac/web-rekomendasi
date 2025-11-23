@@ -1,8 +1,33 @@
 import React from 'react'
 import { Star, MapPin, Heart } from 'lucide-react';
 
+interface WisataCardProps {
+  title: string;
+  address: string;
+  ticket_price: string;
+  total_rating: number;
+  total_review: number;
+  top: number;
+}
 
-const WisataCard = () => {
+function extractProvinceCountry(address: string): string {
+  if (!address) return "";
+
+  const parts = address.split(",").map(p => p.trim());
+
+  // Ambil 2 bagian terakhir (provinsi+kodepos, negara)
+  let province = parts[parts.length - 2];
+  const country = parts[parts.length - 1];
+
+  // Hapus angka kode pos (4–6 digit)
+  province = province.replace(/\d{4,6}/, "").trim();
+
+  return `${province}, ${country}`;
+}
+
+
+
+const WisataCard = ({top, title, address,ticket_price, total_rating, total_review}: WisataCardProps) => {
   return (
     <div className="flex w-full max-w-[900px] bg-white border border-gray-200 rounded-xl p-3 gap-4 font-sans shadow-sm hover:shadow-md transition-shadow col-span-2">
       <div className="w-[280px] shrink-0 flex flex-col gap-1">
@@ -52,36 +77,29 @@ const WisataCard = () => {
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
-              <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded flex items-center gap-1">
-                <Star className="w-3 h-3 fill-orange-700" /> Top Hotel 2
-              </span>
+              {top <= 5 && (
+                <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                  <Star className="w-3 h-3 fill-orange-700" /> Top Wisata {top}
+                </span>
+              )}
               <span className="text-red-500 text-xs font-semibold">1 kamar tersisa</span>
             </div>
             
             <div className="flex items-center gap-2 mt-1">
-              <div className="bg-blue-600 p-0.5 rounded-sm">
-                <span className="text-[10px] text-white font-bold px-1">PLUS</span>
-              </div>
-              <h2 className="text-lg font-bold text-gray-800">Sahid Surabaya</h2>
+              <h2 className="text-lg font-bold text-gray-800">{title}</h2>
             </div>
 
             <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
-              <div className="flex text-orange-400">
-                <Star className="w-3 h-3 fill-orange-400" />
-                <Star className="w-3 h-3 fill-orange-400" />
-                <Star className="w-3 h-3 fill-orange-400" />
-              </div>
               <MapPin className="w-3 h-3" />
-              <span>Genteng, Surabaya</span>
+              <span>{extractProvinceCountry(address)}</span>
             </div>
           </div>
 
           <div className="text-right">
             <div className="flex items-center justify-end gap-1 text-gray-600">
-              <span className="font-bold text-sm">4,1/5</span>
-              <span className="text-xs text-gray-400">(2.778)</span>
+              <span className="font-bold text-sm">{total_rating}/5</span>
+              <span className="text-xs text-gray-400">({total_review})</span>
             </div>
-            <p className="text-xs text-gray-500 mt-0.5">"Akses mudah"</p>
           </div>
         </div>
 
@@ -101,14 +119,11 @@ const WisataCard = () => {
           <div className="border border-gray-200 rounded-lg p-2 shadow-[0_2px_8px_rgba(0,0,0,0.05)] bg-white min-w-[180px]">
             <div className="text-right">
               <div className="flex justify-end items-center gap-2 mb-0.5">
-                <span className="text-gray-400 text-xs line-through decoration-gray-400">IDR 798.873</span>
+                <span className="text-gray-400 text-xs line-through decoration-gray-400">IDR 100.000</span>
                 <span className="text-red-600 font-bold text-xs">-60%</span>
               </div>
               <div className="text-red-600 font-bold text-lg leading-none">
-                IDR 327.512
-              </div>
-              <div className="text-gray-500 text-[10px] mt-1">
-                (setelah pajak: IDR 396.290)
+                {"IDR " + (String(ticket_price) ?? "30000").replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
               </div>
             </div>
           </div>

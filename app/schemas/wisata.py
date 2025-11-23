@@ -12,3 +12,5 @@ class wisataCreate(BaseModel):
     website: str
     operating_hours: str
     ticket_price: int
+    total_rating: float
+    total_review: int
