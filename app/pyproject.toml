@@ -15,5 +15,7 @@ dependencies = [
     "pymysql>=1.1.2",
     "python-dotenv>=1.2.1",
     "sqlalchemy>=2.0.44",
+    "torch>=2.9.1",
+    "transformers>=4.57.1",
     "uvicorn>=0.38.0",
 ]

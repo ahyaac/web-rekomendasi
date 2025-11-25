@@ -29,7 +29,7 @@ const Wisata = () => {
   return (
     <>
       <Navbar />
-      <div className="flex w-3/4 mx-auto mt-5 gap-4">
+      <div className="flex w-[85%] 2xl:w-[50%] mx-auto mt-5 gap-4">
         
         {/* Kolom kiri */}
         <div className="flex-1 grid grid-cols-2 gap-4">
@@ -42,6 +42,7 @@ const Wisata = () => {
               ticket_price={wisataItem.ticket_price}
               total_rating={wisataItem.total_rating}
               total_review={wisataItem.total_review}
+              description={wisataItem.description}
             />
           ))}
         </div>

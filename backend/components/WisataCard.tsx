@@ -7,6 +7,7 @@ interface WisataCardProps {
   ticket_price: string;
   total_rating: number;
   total_review: number;
+  description?: string;
   top: number;
 }
 
@@ -14,22 +15,17 @@ function extractProvinceCountry(address: string): string {
   if (!address) return "";
 
   const parts = address.split(",").map(p => p.trim());
-
-  // Ambil 2 bagian terakhir (provinsi+kodepos, negara)
   let province = parts[parts.length - 2];
   const country = parts[parts.length - 1];
-
-  // Hapus angka kode pos (4–6 digit)
   province = province.replace(/\d{4,6}/, "").trim();
-
   return `${province}, ${country}`;
 }
 
 
 
-const WisataCard = ({top, title, address,ticket_price, total_rating, total_review}: WisataCardProps) => {
+const WisataCard = ({top, title,description, address,ticket_price, total_rating, total_review}: WisataCardProps) => {
   return (
-    <div className="flex w-full max-w-[900px] bg-white border border-gray-200 rounded-xl p-3 gap-4 font-sans shadow-sm hover:shadow-md transition-shadow col-span-2">
+    <button className="flex w-full max-w-[900px] cursor-pointer bg-white border border-gray-200 rounded-xl p-3 gap-4 font-sans shadow-sm hover:shadow-xl transition-shadow col-span-2">
       <div className="w-[280px] shrink-0 flex flex-col gap-1">
         <div className="relative h-44 rounded-lg overflow-hidden">
           <div className="absolute top-0 left-0 z-10 flex">
@@ -104,8 +100,7 @@ const WisataCard = ({top, title, address,ticket_price, total_rating, total_revie
         </div>
 
         <div className="mt-3 flex flex-col gap-1">
-          <p className="text-green-600 text-xs font-medium">Couple traveler puas nginep di sini</p>
-          <p className="text-green-600 text-xs">Sarapan Gratis, Parkir Gratis, Wifi Gratis</p>
+          <p className="text-green-600 text-xs font-medium text-left">{description ?? "Wisata yang sangat seru dan menarik untuk dikunjungi" }</p>
         </div>
 
         <div className="border-t border-gray-100 my-3"></div>
@@ -129,7 +124,7 @@ const WisataCard = ({top, title, address,ticket_price, total_rating, total_revie
           </div>
         </div>
       </div>
-    </div>
+    </button>
   );
 };
 
