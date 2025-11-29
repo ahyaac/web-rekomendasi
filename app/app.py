@@ -47,7 +47,7 @@ async def get_wisata_by_id(wisata_id: int, db: AsyncSession = Depends(get_async_
 async def get_recommendations(user_id: int, db: AsyncSession = Depends(get_async_session)):
     vector = get_embedding(["Murah, Sepi, Dekat"])[0]
     vector_str = "[" + ",".join(str(v) for v in vector) + "]"
-    query_sql = text(f"""select d.title, d.address, d.description, d.latitude, d.longitude, d.phone, d.website, d.operating_hours, d.ticket_price, d.total_rating, d.total_review, emb.embedding <=> '{vector_str}'::vector
+    query_sql = text(f"""select d.id, d.title, d.address, d.description, d.latitude, d.longitude, d.phone, d.website, d.operating_hours, d.ticket_price, d.total_rating, d.total_review, emb.embedding <=> '{vector_str}'::vector
     AS cosine_distance from destination_content_embeddings emb join destinations d on emb.destination_id = d.id order by cosine_distance DESC""")
     
     result = await db.execute(query_sql)
@@ -55,6 +55,20 @@ async def get_recommendations(user_id: int, db: AsyncSession = Depends(get_async
     if not recommendations:
         raise HTTPException(status_code=404, detail="No recommendations found")
     return {"user_id": user_id, "recommendations": recommendations}
+
+@app.get("/api/v1/reviews/{destination_id}")
+async def get_reviews(destination_id: int, db: AsyncSession = Depends(get_async_session)):
+    query_sql = text(f"""SELECT u.name, d_rev.review_text, d_rev.rating, d_rev.destination_id
+                        FROM destination_reviews d_rev
+                        JOIN users u ON u.id = d_rev.user_id
+                        WHERE d_rev.destination_id = {destination_id};
+                        """)
+    
+    result = await db.execute(query_sql)
+    reviews = result.mappings().all()
+    if not reviews:
+        raise HTTPException(status_code=404, detail="No reviews found")
+    return {"destination_id": destination_id, "reviews": reviews}
 
 @app.post("/api/v1/wisata")
 async def create_wisata(wisata: wisata.wisataCreate, session: AsyncSession = Depends(get_async_session)):

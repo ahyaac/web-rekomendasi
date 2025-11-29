@@ -1,10 +1,20 @@
 import React, { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ReviewCard from './ReviewCard';
+interface WisataReviewProps {
+  total_review: number;
+  total_rating: number;
+  reviews?: Array<{
+    id: number;
+    rating: string;
+    name: string;
+    tripType: string;
+    review_text: string;
+  }>;
+}
 
 
-
-const WisataReview = () => {
+const WisataReview = ({ reviews, total_review, total_rating }: WisataReviewProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -18,49 +28,46 @@ const WisataReview = () => {
       }
     }
   };
-
-  const reviews = [
-    {
-      id: 1,
-      rating: '5,0',
-      date: '20 Nov 2025',
-      name: 'Laurensia Nurkusuma Dewi',
-      tripType: 'Trip Pasangan',
-      text: 'Affordable accommodation, does not disappoint. Room equipped with a working desk. Outstanding staff skills.'
-    },
-    {
-      id: 2,
-      rating: '5,0',
-      date: '19 Nov 2025',
-      name: 'Permana Putra',
-      tripType: 'Trip Pasangan',
-      text: 'Refreshing clean atmosphere.'
-    },
-    {
-      id: 3,
-      rating: '5,0',
-      date: '18 Nov 2025',
-      name: 'RN',
-      tripType: 'Trip Keluarga',
-      text: 'Dekat stasiun, tempat strategis, kamar bersih dan nyaman.'
-    },
-    {
-      id: 4,
-      rating: '4,8',
-      date: '15 Nov 2025',
-      name: 'Budi Santoso',
-      tripType: 'Trip Bisnis',
-      text: 'Pelayanan sangat ramah, proses check-in cepat. Sarapan bervariasi dan enak.'
-    },
-    {
-      id: 5,
-      rating: '4,5',
-      date: '12 Nov 2025',
-      name: 'Siti Aminah',
-      tripType: 'Trip Solo',
-      text: 'Lokasi sangat strategis di pusat kota. Mudah mencari makan di sekitar hotel.'
-    }
-  ];
+  if (reviews === undefined) {
+     reviews = [
+        {
+          id: 1,
+          rating: '5,0',
+          name: 'Laurensia Nurkusuma Dewi',
+          tripType: 'Trip Pasangan',
+          review_text: 'Affordable accommodation, does not disappoint. Room equipped with a working desk. Outstanding staff skills.'
+        },
+        {
+          id: 2,
+          rating: '5,0',
+          name: 'Permana Putra',
+          tripType: 'Trip Pasangan',
+          review_text: 'Refreshing clean atmosphere.'
+        },
+        {
+          id: 3,
+          rating: '5,0',
+          name: 'RN',
+          tripType: 'Trip Keluarga',
+          review_text: 'Dekat stasiun, tempat strategis, kamar bersih dan nyaman.'
+        },
+        {
+          id: 4,
+          rating: '4,8',
+          name: 'Budi Santoso',
+          tripType: 'Trip Bisnis',
+          review_text: 'Pelayanan sangat ramah, proses check-in cepat. Sarapan bervariasi dan enak.'
+        },
+        {
+          id: 5,
+          rating: '4,5',
+          name: 'Siti Aminah',
+          tripType: 'Trip Solo',
+          review_text: 'Lokasi sangat strategis di pusat kota. Mudah mencari makan di sekitar hotel.'
+        }
+      ];
+  }
+ 
 
   return (
     <div className="max-w-7xl mx-auto p-6 font-sans bg-white border-b border-gray-300">
@@ -74,12 +81,12 @@ const WisataReview = () => {
       <div className="flex justify-between items-end mb-6">
         <div className="flex items-end gap-3">
           <div className="flex items-end text-gray-900 leading-none">
-            <span className="text-5xl font-bold">4,1</span>
+            <span className="text-5xl font-bold">{total_rating}</span>
             <span className="text-xl font-bold text-gray-500 mb-1">/5</span>
           </div>
           <div className="flex flex-col justify-end mb-1">
             <span className="font-bold text-gray-900">Bagus</span>
-            <span className="text-gray-500 text-sm">Dari 2778 review</span>
+            <span className="text-gray-500 text-sm">Dari {total_review} review</span>
           </div>
         </div>
 
@@ -104,14 +111,13 @@ const WisataReview = () => {
         className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar scroll-smooth"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {reviews.map((review) => (
+        {reviews.map((review, index) => (
           <ReviewCard 
-            key={review.id}
+            key={index}
             rating={review.rating}
-            date={review.date}
             name={review.name}
             tripType={review.tripType}
-            text={review.text}
+            review_text={review.review_text}
           />
         ))}
       </div>

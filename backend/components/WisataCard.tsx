@@ -1,5 +1,6 @@
 import React from 'react'
 import { Star, MapPin, Heart } from 'lucide-react';
+import { Link } from 'react-router';
 
 interface WisataCardProps {
   title: string;
@@ -9,6 +10,8 @@ interface WisataCardProps {
   total_review: number;
   description?: string;
   top: number;
+  id: number;
+
 }
 
 function extractProvinceCountry(address: string): string {
@@ -23,9 +26,9 @@ function extractProvinceCountry(address: string): string {
 
 
 
-const WisataCard = ({top, title,description, address,ticket_price, total_rating, total_review}: WisataCardProps) => {
+const WisataCard = ({top,id,title,description, address,ticket_price, total_rating, total_review}: WisataCardProps) => {
   return (
-    <button className="flex w-full max-w-[900px] cursor-pointer bg-white border border-gray-200 rounded-xl p-3 gap-4 font-sans shadow-sm hover:shadow-xl transition-shadow col-span-2">
+    <Link to={`/wisata/${id}`} className="flex w-full max-w-[900px] cursor-pointer bg-white border border-gray-200 rounded-xl p-3 gap-4 font-sans shadow-sm hover:shadow-xl transition-shadow col-span-2">
       <div className="w-[280px] shrink-0 flex flex-col gap-1">
         <div className="relative h-44 rounded-lg overflow-hidden">
           <div className="absolute top-0 left-0 z-10 flex">
@@ -124,7 +127,7 @@ const WisataCard = ({top, title,description, address,ticket_price, total_rating,
           </div>
         </div>
       </div>
-    </button>
+    </Link>
   );
 };
 

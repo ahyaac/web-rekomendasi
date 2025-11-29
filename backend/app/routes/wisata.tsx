@@ -36,6 +36,7 @@ const Wisata = () => {
           {detailWisata.map((wisataItem, index) => (
             <WisataCard
               top={index + 1}
+              id={wisataItem.id}
               key={wisataItem.id}
               title={wisataItem.title}
               address={wisataItem.address}
