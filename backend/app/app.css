@@ -23,3 +23,10 @@ body {
     font-family: 'Poppins', sans-serif;
   }
 }
+
+/* Wajib */
+.leaflet-container {
+  width: 100%;
+  height: 100vh;
+}
+

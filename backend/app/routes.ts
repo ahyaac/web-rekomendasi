@@ -4,5 +4,6 @@ export default [
     index("routes/home.tsx"),
     route("wisata","routes/wisata.tsx"),
     route("wisata/:id","routes/wisataDetail.tsx"),
+    route("map","routes/MapPage.tsx"),
 
 ] satisfies RouteConfig;
