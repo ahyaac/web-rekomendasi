@@ -1,7 +1,9 @@
 import React from 'react';
 import { MapPin, Utensils, ShoppingBag, TrainFront, Landmark, Hospital } from 'lucide-react';
 
+
 const WisataLokasi = () => {
+  
   const destinations = [
     {
       icon: <TrainFront size={18} className="text-blue-500" />,

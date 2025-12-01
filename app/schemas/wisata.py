@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Literal
 
 
 class wisataCreate(BaseModel):
@@ -29,3 +30,11 @@ class UserOut(BaseModel):
 
     class Config:
         orm_mode = True
+        
+class UserPreferencesInput(BaseModel):
+    environment: Literal['Ramai', 'Sepi']
+    tipe: Literal['Gunung', 'Laut', 'Taman', 'Wahana', 'Pantai']
+    price_category: Literal['Murah', 'Mahal']
+
+    class Config:
+        from_attributes = True

@@ -3,13 +3,15 @@ import SearchBar from './SearchBar'
 import { AuthContext } from 'api/AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 const Navbar = () => {
   const { user, setUser } = useContext(AuthContext);
 
   console.log("Navbar user:", user);
   const logout = () => {
-    fetch("http://localhost:8000/api/v1/logout", {
+    fetch(`${API_URL}/logout`, {
       method: "POST",
       credentials: "include",
     }).finally(() => setUser(null));
@@ -44,6 +46,12 @@ const Navbar = () => {
         onClick={() => navigate('/map')}
       >
         Maps
+      </div>
+      <div 
+        className={getButtonClass('/preferences')} 
+        onClick={() => navigate('/preferences')}
+      >
+        Preferences
       </div>
     </div>
 

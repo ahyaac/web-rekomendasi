@@ -17,17 +17,20 @@ from app.models.user import User
 from app.schemas.wisata import UserLogin, UserCreate, UserOut
 from app.services.get_preferences import get_user_preferences_text
 from app.services.auth import SECRET_KEY
+from app.models.user import UserPreferences
+from app.schemas.wisata import UserPreferencesInput
 
 
 app = FastAPI()
 
-origins = ["http://localhost:5173"]
+origins = ["http://localhost:5173",
+           "http://127.0.0.1:5173"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,  # asal yang diijinkan
     allow_credentials=True,
-    allow_methods=["*"],    # GET, POST, PUT, DELETE
+    allow_methods=["GET", "POST", "PUT", "DELETE"],    # GET, POST, PUT, DELETE
     allow_headers=["*"],    # Header apa saja yang diijinkan
 )
 
@@ -250,4 +253,63 @@ async def create_wisata(wisata: wisata.wisataCreate, session: AsyncSession = Dep
     return {"message": "Wisata created successfully", "wisata": destination}
 
 
+@app.get('/api/v1/preferences')
+async def get_user_preferences(user_id: int | None = Depends(get_current_user_id), db: AsyncSession = Depends(get_async_session)):
+    q = await db.execute(
+        select(
+            UserPreferences.environment,
+            UserPreferences.tipe,
+            UserPreferences.price_category
+        ).where(UserPreferences.user_id == user_id)
+    )
+
+    result = q.mappings().first()
+
+    if not result:
+        return None
+
+    return {"Message ": "Success", "preferences": result}
+
+@app.post('/api/v1/preferences')
+async def update_user_preferences(
+    prefs: UserPreferencesInput,
+    user_id: int | None = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_async_session)
+):
+    if user_id is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # 1. Cek apakah user sudah memiliki preferensi di database
+    query = await db.execute(
+        select(UserPreferences).where(UserPreferences.user_id == user_id)
+    )
+    existing_pref = query.scalars().first()
+
+    if existing_pref:
+        # 2. Jika sudah ada, LAKUKAN UPDATE
+        # Kita update field yang berubah saja
+        existing_pref.environment = prefs.environment
+        existing_pref.tipe = prefs.tipe
+        existing_pref.price_category = prefs.price_category
+        
+        # Tidak perlu db.add() karena objek sudah dilacak oleh session
+        # Cukup commit perubahan
+        await db.commit()
+        await db.refresh(existing_pref)
+        
+        return {"message": "Preferences updated successfully", "data": existing_pref}
     
+    else:
+        # 3. Jika belum ada, BUAT BARU (INSERT)
+        new_pref = UserPreferences(
+            user_id=user_id,
+            environment=prefs.environment,
+            tipe=prefs.tipe,
+            price_category=prefs.price_category
+        )
+        
+        db.add(new_pref)
+        await db.commit()
+        await db.refresh(new_pref)
+        
+        return {"message": "Preferences created successfully", "data": new_pref}

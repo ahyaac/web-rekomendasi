@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+
 interface LoginFormData {
   username: string;
   password: string;
@@ -21,7 +23,7 @@ const LoginPage: React.FC = () => {
     console.log("Submitting form data:", formData);
 
     try {
-      const res = await fetch("http://localhost:8000/api/v1/login", {
+      const res = await fetch(`${API_URL}/login`, {
         method: "POST",
         credentials: "include", // 👉 wajib agar cookie dikirim
         headers: {
