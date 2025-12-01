@@ -71,6 +71,7 @@ export default function RealMap() {
             <Popup className="custom-popup">
                 <PopupMapsCard
                 key={wisata.id}
+                id={wisata.id}
                 title={wisata.title}
                  address={wisata.address}
                  ticket_price={wisata.ticket_price}

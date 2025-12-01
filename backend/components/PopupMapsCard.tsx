@@ -1,7 +1,9 @@
 import React from 'react';
 import { Heart, Star } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface PopupMapsCardProps {
+    id: number;
     title: string;
     address: string;
     total_rating: number;
@@ -9,10 +11,11 @@ interface PopupMapsCardProps {
     ticket_price?: number;
 }
 
-const PopupMapsCard = ({ title,address, total_rating, total_review, ticket_price  }: PopupMapsCardProps) => {
-    
+const PopupMapsCard = ({ id,title,address, total_rating, total_review, ticket_price  }: PopupMapsCardProps) => {
+    const navigate = useNavigate();
+
     return (
-    <div className="w-[220px] bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow font-sans cursor-pointer group">
+    <div onClick={() => navigate(`${id}`)} className="w-[220px] bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow font-sans cursor-pointer group">
       <div className="relative h-[160px]">
         <img 
           src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
