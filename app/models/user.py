@@ -17,5 +17,6 @@ class UserPreferences(Base):
     user_id = Column(Integer,primary_key=True, nullable=False)
     environment = Column(String)
     tipe = Column(String)
+    embedding = Column(String)
     price_category = Column(String)
 

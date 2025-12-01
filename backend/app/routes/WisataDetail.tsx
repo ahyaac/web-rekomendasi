@@ -1,4 +1,3 @@
-import React from 'react'
 import WisataDescription from '../../components/WisataDescription';
 import Navbar from '../../components/Navbar';
 import WisataReview from 'components/WisataReview';

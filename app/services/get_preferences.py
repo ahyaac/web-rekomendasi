@@ -5,9 +5,7 @@ from app.models.user import UserPreferences
 async def get_user_preferences_text(user_id: int, db: AsyncSession):
     q = await db.execute(
         select(
-            UserPreferences.environment,
-            UserPreferences.tipe,
-            UserPreferences.price_category
+            UserPreferences.embedding,
         ).where(UserPreferences.user_id == user_id)
     )
 
@@ -16,8 +14,4 @@ async def get_user_preferences_text(user_id: int, db: AsyncSession):
     if not result:
         return None  # atau nilai default
 
-    environment, tipe, price = result
-    # Gabungkan menjadi 1 string, contoh: "Murah, Sepi, Dekat"
-    combined = f"{environment}, {tipe}, {price}"
-
-    return combined
+    return result[0]
