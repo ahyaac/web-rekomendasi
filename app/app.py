@@ -1,5 +1,6 @@
 from sqlalchemy import select
-from fastapi import FastAPI, HTTPException,Form, Depends, Response
+from fastapi import FastAPI, HTTPException,Form, Depends, Response, Cookie
+from jose import jwt
 from .schemas import wisata
 from sqlalchemy.ext.asyncio import AsyncSession
 from contextlib import asynccontextmanager
@@ -15,6 +16,7 @@ from app.schemas.wisata import UserCreate, UserOut
 from app.models.user import User
 from app.schemas.wisata import UserLogin, UserCreate, UserOut
 from app.services.get_preferences import get_user_preferences_text
+from app.services.auth import SECRET_KEY
 
 
 app = FastAPI()
@@ -49,7 +51,7 @@ async def register(data: UserCreate, db: AsyncSession = Depends(get_async_sessio
     await db.refresh(user)
     return user
 
-@app.post("/login")
+@app.post("/api/v1/login")
 async def login(data: UserLogin, response: Response, db: AsyncSession = Depends(get_async_session)):
     q = await db.execute(select(User).where(User.name == data.username))
     user = q.scalar_one_or_none()
@@ -60,7 +62,7 @@ async def login(data: UserLogin, response: Response, db: AsyncSession = Depends(
     if data.password != user.password_hash:
         raise HTTPException(status_code=400, detail="Password salah")
 
-    token = create_access_token({"user_id": user.id})
+    token = create_access_token({"user_id": user.id, "username": user.name})
 
     # set cookie (HTTP-only)
     response.set_cookie(
@@ -73,9 +75,28 @@ async def login(data: UserLogin, response: Response, db: AsyncSession = Depends(
         path="/"
     )
 
-    return {"message": "Login sukses", "user": {"id": user.id, "username": user.name}}
+    return {"message": "Login sukses", "user": {"id": user.id, "username": user.name, "token": token}}
 
+@app.get("/api/v1/me")
+async def me(access_token: str = Cookie(None)):
+    if not access_token:
+        raise HTTPException(401, "Not logged in")
 
+    try:
+        data = jwt.decode(access_token, SECRET_KEY, algorithms=["HS256"])
+        return {"loggedIn": True, "user": data}
+    except Exception as e:
+        print("Decode error:", e)
+        raise HTTPException(401, "Invalid or expired token")
+
+@app.post("/api/v1/logout")
+async def logout(response: Response):
+    response.delete_cookie(
+        key="access_token",
+        path="/"
+    )
+    return {"message": "Logged out successfully"}
+    
 # API UNTUK WISATA
 @app.get("/api/v1/wisata")
 async def get_wisata(db: AsyncSession = Depends(get_async_session)):

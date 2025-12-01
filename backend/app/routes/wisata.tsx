@@ -23,6 +23,17 @@ const Wisata = () => {
 
   console.log(detailWisata);
 
+  const [MapComponent, setMapComponent] = useState<React.FC | null>(null);
+
+  useEffect(() => {
+    // Import hanya terjadi di browser, bukan saat initial render
+    import("../../components/Maps").then((module) => {
+      setMapComponent(() => module.default);
+    });
+  }, []);
+
+  if (!MapComponent) return <p>Loading map...</p>;
+
   if (loading) return <p className="text-center mt-10">Loading...</p>;
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
@@ -47,10 +58,9 @@ const Wisata = () => {
             />
           ))}
         </div>
-
         {/* Kolom kanan */}
-        <div className="w-[350px] h-[calc(100vh-120px)] sticky top-[120px] bg-blue-200">
-          {/* Map nanti di sini */}
+        <div className="w-[400px] h-[600px] hidden lg:block sticky top-32">
+          {MapComponent && <MapComponent />}
         </div>
       </div>
     </>

@@ -11,6 +11,7 @@ dependencies = [
     "fastapi>=0.121.3",
     "implicit>=0.7.2",
     "jose>=1.0.0",
+    "jwt>=1.4.0",
     "pandas>=2.3.3",
     "passlib>=1.7.4",
     "psycopg2>=2.9.11",

@@ -30,3 +30,22 @@ body {
   height: 100vh;
 }
 
+/* batasi ukuran popup */
+.leaflet-popup-content-wrapper {
+  padding: 0 !important;
+  border-radius: 10px;
+}
+
+/* batasi ukuran maksimal */
+.custom-popup .leaflet-popup-content {
+  margin: 0 !important;
+  width: 200px;     /* ubah ukuran sesukamu */
+  padding: 0 !important;
+}
+
+/* hilangkan efek default */
+.leaflet-popup-tip {
+  display: none !important;
+}
+
+
